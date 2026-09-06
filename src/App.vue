@@ -7,8 +7,12 @@ const mainRef = ref(null)
 
 const capturePage = async () => {
   const node = mainRef.value
+  const button = node.querySelector('button')
   const originalOverflow = node.style.overflow
+  const originalButtonVisibility = button.style.visibility
+  
   node.style.overflow = 'visible'
+  button.style.visibility = 'hidden'
 
   try {
     const dataUrl = await domtoimage.toPng(node, {
@@ -28,6 +32,7 @@ const capturePage = async () => {
     console.error('Error capturing page:', error)
   } finally {
     node.style.overflow = originalOverflow
+    button.style.visibility = originalButtonVisibility
   }
 }
 </script>
