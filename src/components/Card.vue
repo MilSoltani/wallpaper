@@ -7,13 +7,17 @@ defineProps({
   items: {
     type: Array,
     default: () => []
+  },
+  color: {
+    type: String,
+    default: 'red-700'
   }
 })
 </script>
 
 <template>
-  <div class="border border-red-500 rounded-xl h-[330px] flex flex-col">
-    <div class="font-bold px-4 pt-4 pb-1 border-b bg-red-700">
+  <div class="rounded-xl h-[430px] flex flex-col border-4" :class="`border-${color}`">
+    <div class="font-bold px-4 pt-4 pb-1 border-b" :class="`bg-${color}`">
       {{ title }}
     </div>
 
@@ -23,7 +27,8 @@ defineProps({
           v-for="(item, index) in items"
           :key="index"
         >
-          {{ item }}
+          <span class="text-white font-mono text-3xl">{{ item.cmd }}</span>
+          <span class="text-gray-400 ms-8 text-3xl">{{ item.desc }}</span>
         </div>
       </div>
     </div>
