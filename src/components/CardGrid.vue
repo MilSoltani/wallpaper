@@ -21,7 +21,6 @@ const cards = ref([
       { cmd: 'ip link', desc: 'List interfaces' },
       { cmd: 'ip -s link', desc: 'Interface stats' },
       { cmd: 'ethtool eth0', desc: 'Link info' },
-      { cmd: 'cat /proc/net/dev', desc: 'Traffic stats' },
       { cmd: 'ip -br link', desc: 'Compact interface list' },
       { cmd: 'ls /sys/class/net', desc: 'List all interfaces' }
     ]
@@ -40,228 +39,213 @@ const cards = ref([
   },
   {
     id: 3,
-    title: 'Routing',
+    title: 'Connectivity',
     color: colors[2],
     items: [
-      { cmd: 'ip route', desc: 'Show routes' },
-      { cmd: 'ip route get 8.8.8.8', desc: 'Route for IP' },
-      { cmd: 'ip route add default via 192.168.1.1', desc: 'Add default' },
-      { cmd: 'ip route del default', desc: 'Remove default' },
-      { cmd: 'ip route add 10.10.0.0/16 via 192.168.1.1', desc: 'Add route' }
-    ]
-  },
-  {
-    id: 4,
-    title: 'Connectivity',
-    color: colors[3],
-    items: [
-      { cmd: 'ping 8.8.8.8', desc: 'Test IP connectivity' },
       { cmd: 'ping -c 4 8.8.8.8', desc: '4 pings' },
       { cmd: 'traceroute example.com', desc: 'Path to host' },
       { cmd: 'mtr example.com', desc: 'Ping + traceroute' },
       { cmd: 'tracepath example.com', desc: 'Path + MTU' },
-      { cmd: 'ping -W 2 8.8.8.8', desc: 'Ping with timeout' },
-      { cmd: 'ip route get 8.8.8.8', desc: 'Test routing' }
+      { cmd: "curl -o /dev/null -s -w '%{time_total}\\n' URL", desc: 'Time a request' }
+    ]
+  },
+  {
+    id: 4,
+    title: 'DNS',
+    color: colors[3],
+    items: [
+      { cmd: 'dig example.com', desc: 'DNS query' },
+      { cmd: 'dig +short example.com', desc: 'Short answer' },
+      { cmd: 'dig AAAA example.com', desc: 'IPv6 query' },
+      { cmd: 'host example.com', desc: 'Simple DNS lookup' },
+      { cmd: 'nslookup example.com', desc: 'DNS lookup' },
+      { cmd: 'resolvectl status', desc: 'DNS config' }
     ]
   },
   {
     id: 5,
-    title: 'DNS',
-    color: colors[4],
-    items: [
-      { cmd: 'dig example.com', desc: 'DNS query' },
-      { cmd: 'dig +short example.com', desc: 'Short answer' },
-      { cmd: 'dig A example.com', desc: 'IPv4 query' },
-      { cmd: 'dig AAAA example.com', desc: 'IPv6 query' },
-      { cmd: 'resolvectl status', desc: 'DNS config' },
-      { cmd: 'host example.com', desc: 'Simple DNS lookup' },
-      { cmd: 'nslookup example.com', desc: 'DNS lookup' }
-    ]
-  },
-  {
-    id: 6,
     title: 'TCP/UDP Ports',
-    color: colors[5],
+    color: colors[4],
     items: [
       { cmd: 'ss -tuln', desc: 'Listening ports' },
       { cmd: 'ss -tulpn', desc: 'Ports with processes' },
       { cmd: 'ss -tan', desc: 'All TCP connections' },
       { cmd: 'ss -ltnp', desc: 'TCP ports with PIDs' },
       { cmd: 'ss -s', desc: 'Socket stats' },
-      { cmd: 'ss -uan', desc: 'All UDP sockets' },
+      { cmd: 'ss -uan', desc: 'All UDP sockets' }
     ]
   },
   {
-    id: 7,
+    id: 6,
     title: 'Port Testing',
-    color: colors[6],
+    color: colors[5],
     items: [
       { cmd: 'nc -vz 192.168.1.10 22', desc: 'Test TCP port' },
       { cmd: 'nc -zv 192.168.1.10 20-25', desc: 'Scan ports' },
       { cmd: 'nc -u -vz 192.168.1.10 53', desc: 'Test UDP port' },
       { cmd: 'telnet example.com 80', desc: 'Manual TCP test' },
-      { cmd: 'curl telnet://example.com:25', desc: 'TCP test' },
+      { cmd: 'curl telnet://example.com:25', desc: 'TCP test' }
+    ]
+  },
+  {
+    id: 7,
+    title: 'HTTP/HTTPS',
+    color: colors[6],
+    items: [
+      { cmd: 'curl https://example.com', desc: 'GET request' },
+      { cmd: 'curl -I https://example.com', desc: 'Headers' },
+      { cmd: "curl -X POST -d '{}' URL", desc: 'POST JSON' },
+      { cmd: "curl -H 'Authorization: Bearer TOKEN' URL", desc: 'Auth' },
+      { cmd: 'curl -L https://example.com', desc: 'Follow redirects' },
     ]
   },
   {
     id: 8,
-    title: 'HTTP/HTTPS',
+    title: 'SSL/TLS',
     color: colors[7],
     items: [
-      { cmd: 'curl https://example.com', desc: 'HTTP request' },
-      { cmd: 'curl -I https://example.com', desc: 'Headers only' },
-      { cmd: 'curl -v https://example.com', desc: 'Verbose' },
-      { cmd: 'curl -L https://example.com', desc: 'Follow redirects' },
-      { cmd: "curl -w '%{http_code}\\n' URL", desc: 'Status code' }
+      { cmd: 'openssl s_client -connect example.com:443', desc: 'Test TLS handshake' },
+      { cmd: 'openssl x509 -in cert.pem -noout -dates', desc: 'Cert expiry dates' },
+      { cmd: 'echo | openssl s_client -connect HOST:443 2>/dev/null | openssl x509 -noout -enddate', desc: 'expiry check' }
     ]
   },
   {
     id: 9,
-    title: 'ARP',
+    title: 'SSH & Remote Access',
     color: colors[8],
     items: [
-      { cmd: 'ip neigh', desc: 'ARP table' },
-      { cmd: 'ip neigh show dev eth0', desc: 'Interface ARP' },
-      { cmd: 'ip neigh flush all', desc: 'Clear ARP' },
-      { cmd: 'arp -n', desc: 'Legacy ARP' },
-      { cmd: 'arping 192.168.1.1', desc: 'L2 reachability' },
-      { cmd: 'ip -6 neigh', desc: 'IPv6 neighbors' },
+      { cmd: 'ssh -i key.pem user@host', desc: 'with key' },
+      { cmd: 'rsync -avz dir/ user@host:/path', desc: 'Sync directory' },
+      { cmd: 'ssh-keygen -t ed25519', desc: 'Generate SSH key' },
+      { cmd: 'ssh-copy-id user@host', desc: 'Copy key to server' }
     ]
   },
   {
     id: 10,
-    title: 'NetworkManager',
+    title: 'File Permissions',
     color: colors[9],
     items: [
-      { cmd: 'nmcli device status', desc: 'Device state' },
-      { cmd: 'nmcli connection show', desc: 'Connections' },
-      { cmd: 'nmcli device wifi list', desc: 'Wi-Fi networks' },
-      { cmd: 'nmcli device wifi connect SSID', desc: 'Connect Wi-Fi' },
-      { cmd: 'nmcli radio wifi', desc: 'Wi-Fi state' },
-      { cmd: 'nmcli general status', desc: 'NM status' }
+      { cmd: 'chmod 755 file', desc: 'Set rwxr-xr-x' },
+      { cmd: 'chmod -R 755 dir', desc: 'Recursive' },
+      { cmd: 'chown user:group file', desc: 'Change owner' },
+      { cmd: 'chown -R user:group dir', desc: 'Recursive owner' },
+      { cmd: 'ls -la', desc: 'List with permissions' }
     ]
   },
   {
     id: 11,
-    title: 'DHCP',
+    title: 'Users & Groups',
     color: colors[10],
     items: [
-      { cmd: 'dhclient', desc: 'Request IP' },
-      { cmd: 'dhclient -v eth0', desc: 'Verbose DHCP' },
-      { cmd: 'dhclient -r eth0', desc: 'Release lease' },
-      { cmd: 'nmcli device reapply eth0', desc: 'Reapply config' },
-      { cmd: 'journalctl -u NetworkManager', desc: 'NM logs' },
+      { cmd: 'adduser username', desc: 'Create user (Debian)' },
+      { cmd: 'usermod -aG sudo username', desc: 'Grant sudo access' },
+      { cmd: 'usermod -aG groupname username', desc: 'Add to group' },
+      { cmd: 'groups username', desc: 'Show user groups' },
+      { cmd: 'deluser username', desc: 'Remove user' }
     ]
   },
   {
     id: 12,
-    title: 'Packet Capture',
-    color: colors[11],
-    items: [
-      { cmd: 'tcpdump -i eth0', desc: 'Capture on eth0' },
-      { cmd: 'tcpdump -i any', desc: 'Capture all' },
-      { cmd: 'tcpdump -nn -i eth0', desc: 'No resolve' },
-      { cmd: 'tcpdump -i eth0 port 443', desc: 'HTTPS traffic' },
-      { cmd: 'tcpdump -i eth0 -w file.pcap', desc: 'Save to file' }
-    ]
-  },
-  {
-    id: 13,
-    title: 'nftables',
-    color: colors[12],
-    items: [
-      { cmd: 'nft list ruleset', desc: 'Show all rules' },
-      { cmd: 'nft list tables', desc: 'List tables' },
-      { cmd: 'nft list table inet filter', desc: 'Show table' },
-      { cmd: 'nft monitor', desc: 'Monitor changes' },
-      { cmd: 'systemctl status nftables', desc: 'Service status' }
-    ]
-  },
-  {
-    id: 14,
-    title: 'iptables',
-    color: colors[13],
-    items: [
-      { cmd: 'iptables -L -n -v', desc: 'List rules' },
-      { cmd: 'iptables -S', desc: 'Rules as commands' },
-      { cmd: 'iptables -t nat -L -n -v', desc: 'NAT rules' },
-      { cmd: 'iptables-save', desc: 'Export rules' },
-      { cmd: 'ip6tables -L -n -v', desc: 'IPv6 rules' },
-      { cmd: 'iptables-restore', desc: 'Restore rules' }
-    ]
-  },
-  {
-    id: 16,
-    title: 'Hostname',
-    color: colors[15],
-    items: [
-      { cmd: 'hostname', desc: 'System hostname' },
-      { cmd: 'hostnamectl', desc: 'Hostname info' },
-      { cmd: 'hostname -I', desc: 'IP addresses' },
-      { cmd: 'cat /etc/hostname', desc: 'Configured hostname' },
-      { cmd: 'cat /etc/hosts', desc: 'Static mappings' },
-      { cmd: 'hostname -f', desc: 'Fully qualified hostname' },
-    ]
-  },
-  {
-    id: 17,
-    title: 'Namespaces',
-    color: colors[16],
-    items: [
-      { cmd: 'ip netns list', desc: 'List namespaces' },
-      { cmd: 'ip netns add test', desc: 'Create namespace' },
-      { cmd: 'ip netns exec test ip addr', desc: 'Run in namespace' },
-      { cmd: 'ip netns exec test ping 10.0.0.1', desc: 'Ping from ns' },
-      { cmd: 'ip netns delete test', desc: 'Delete namespace' }
-    ]
-  },
-  {
-    id: 18,
-    title: 'Bridges',
-    color: colors[17],
-    items: [
-      { cmd: 'ip link show type bridge', desc: 'List bridges' },
-      { cmd: 'bridge link', desc: 'Show ports' },
-      { cmd: 'ip link add br0 type bridge', desc: 'Create bridge' },
-      { cmd: 'ip link set eth0 master br0', desc: 'Add to bridge' },
-      { cmd: 'ip link set br0 up', desc: 'Enable bridge' }
-    ]
-  },
-  {
-    id: 19,
-    title: 'VLANs',
-    color: colors[18],
-    items: [
-      { cmd: 'ip -d link', desc: 'Show VLANs' },
-      { cmd: 'ip link add link eth0 name eth0.100 type vlan id 100', desc: 'Create VLAN' },
-      { cmd: 'ip link set eth0.100 up', desc: 'Enable VLAN' },
-      { cmd: 'ip addr add 192.168.100.10/24 dev eth0.100', desc: 'IP to VLAN' },
-      { cmd: 'ip link delete eth0.100', desc: 'Delete VLAN' }
-    ]
-  },
-  {
-    id: 24,
     title: 'Processes',
-    color: colors[23],
+    color: colors[11],
     items: [
       { cmd: 'lsof -i', desc: 'Network processes' },
       { cmd: 'lsof -i :80', desc: 'Port 80 processes' },
       { cmd: 'ss -tulpn', desc: 'Ports to processes' },
       { cmd: 'fuser -n tcp 8080', desc: 'Find process on port' },
-      { cmd: 'ps aux | grep ssh', desc: 'SSH processes' },
-      { cmd: 'netstat -tulpn', desc: 'Legacy port listing' }
+      { cmd: 'ps aux | grep node', desc: 'Filter processes' }
     ]
   },
   {
-    id: 25,
-    title: 'Logs',
-    color: colors[24],
+    id: 13,
+    title: 'Text Processing & Search',
+    color: colors[12],
     items: [
-      { cmd: 'journalctl -k', desc: 'Kernel logs' },
-      { cmd: 'journalctl -k | grep -i network', desc: 'Network events' },
-      { cmd: 'journalctl -u NetworkManager', desc: 'NM logs' },
-      { cmd: 'dmesg | grep -i eth', desc: 'Ethernet events' },
-      { cmd: 'systemctl status NetworkManager', desc: 'NM status' }
+      { cmd: "grep -r 'text' .", desc: 'Recursive search' },
+      { cmd: "find . -name '*.js'", desc: 'Find files by name' },
+      { cmd: 'find . -mtime -1', desc: 'Modified in last day' },
+      { cmd: "awk '{print $1}' file", desc: 'Print column' },
+      { cmd: "sed 's/old/new/g' file", desc: 'Replace text' }
+    ]
+  },
+  {
+    id: 14,
+    title: 'Signals & Job Control',
+    color: colors[13],
+    items: [
+      { cmd: 'kill -9 PID', desc: 'Force kill process' },
+      { cmd: 'kill -HUP PID', desc: 'Reload config (SIGHUP)' },
+      { cmd: 'command &', desc: 'Run in background' },
+      { cmd: 'nohup command &', desc: 'Survive terminal close' },
+      { cmd: 'jobs -l', desc: 'List background jobs' },
+      { cmd: 'fg %1', desc: 'Bring job to foreground' }
+    ]
+  },
+  {
+    id: 15,
+    title: 'Systemd Services',
+    color: colors[14],
+    items: [
+      { cmd: 'systemctl list-units --type=service', desc: 'List running services' },
+      { cmd: 'systemctl daemon-reload', desc: 'Reload unit files' },
+      { cmd: 'systemctl is-active service', desc: 'Check if running' }
+    ]
+  },
+  {
+    id: 16,
+    title: 'Kernel & Boot',
+    color: colors[15],
+    items: [
+      { cmd: 'uname -a', desc: 'Kernel & system info' },
+      { cmd: 'dmesg | tail -50', desc: 'Recent kernel messages' },
+      { cmd: 'journalctl -b', desc: 'Logs since last boot' },
+      { cmd: 'cat /proc/cpuinfo', desc: 'CPU details' },
+      { cmd: 'lsmod', desc: 'Loaded kernel modules' }
+    ]
+  },
+{
+    id: 17,
+    title: 'pnpm',
+    color: colors[16],
+    items: [
+      { cmd: 'pnpm why pkg', desc: 'Why is this package installed' },
+      { cmd: 'pnpm outdated', desc: 'Check for outdated' },
+      { cmd: 'pnpm store prune', desc: 'Clean unused store packages' },
+      { cmd: 'pnpm -filter pkgname run build', desc: 'Run script in a workspace pkg' }
+    ]
+  },
+  {
+    id: 18,
+    title: 'Disk & Storage',
+    color: colors[17],
+    items: [
+      { cmd: 'df -h', desc: 'Disk usage by filesystem' },
+      { cmd: 'du -sh dir', desc: 'Size of directory' },
+      { cmd: 'du -sh * | sort -h', desc: 'Largest items in dir' },
+      { cmd: 'free -h', desc: 'Memory usage' },
+      { cmd: 'lsblk', desc: 'List block devices' }
+    ]
+  },
+  {
+    id: 19,
+    title: 'Archives & Compression',
+    color: colors[18],
+    items: [
+      { cmd: 'tar -czvf archive.tar.gz dir/', desc: 'Compress' },
+      { cmd: 'tar -xzvf archive.tar.gz', desc: 'Extract' },
+      { cmd: 'zip -r archive.zip dir/', desc: 'Zip directory' },
+      { cmd: 'unzip archive.zip', desc: 'Unzip' }
+    ]
+  },
+  {
+    id: 20,
+    title: 'Logs',
+    color: colors[19],
+    items: [
+      { cmd: 'journalctl -f', desc: 'Follow live logs' },
+      { cmd: 'journalctl -u service', desc: 'Service logs' },
+      { cmd: 'tail -f /var/log/syslog', desc: 'Follow syslog' },
+      { cmd: 'dmesg | tail', desc: 'Recent kernel messages' }
     ]
   }
 ])
